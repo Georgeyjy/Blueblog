@@ -81,3 +81,28 @@ def register_commands(app):
             click.echo('Deleted database')
         db.create_all()
         click.echo('Initialized database')
+
+    @app.cli.command()
+    @click.option('--category', default=10)
+    @click.option('--post', default=50)
+    @click.option('--comment', default=500)
+    def forge(category, post, comment):
+        """Generate fake information"""
+        from bluelog.fakes import fake_admin, fake_category, fake_post, fake_comments
+
+        db.drop_all()
+        db.create_all()
+
+        click.echo('Generating fake admin...')
+        fake_admin()
+
+        click.echo('Generating %d fake categories...' % category)
+        fake_category(category)
+
+        click.echo('Generating %d fake posts...' % post)
+        fake_post(post)
+
+        click.echo('Generating %d fake comments...' % comment)
+        fake_comments(comment)
+
+        click.echo('Done.')
