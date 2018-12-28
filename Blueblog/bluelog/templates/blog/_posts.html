@@ -1,0 +1,6 @@
+{% if posts %}
+    {% for post in posts %}
+        <h3 class="text-primary"><a href="{{ url_for('.show_post', post_id=post.id) }}">{{ post.title }}</a></h3>
+        <hr>
+    {% endfor %}
+{% endif %}

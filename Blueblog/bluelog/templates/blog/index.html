@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pager %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>{{ admin.blog_title|default('Blog Title') }}</h1>
+        <h4>{{ admin.blog_subtitle|default('whatever') }}</h4>
+    </div>
+    <div>
+        {% include 'blog/_posts.html' %}
+        {% if posts %}
+        <div>{{ render_pager(pagination) }}</div>
+        {% endif %}
+    </div>
+{% endblock %}
