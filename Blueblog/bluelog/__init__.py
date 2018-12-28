@@ -7,7 +7,7 @@ from flask_login import current_user
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
-from bluelog.extensions import db, moment, bootstrap, ckeditor, mail
+from bluelog.extensions import db, moment, bootstrap, ckeditor, mail, login_manager
 from bluelog.settings import config
 from bluelog.models import Admin, Category, Comment, Link
 
@@ -40,6 +40,7 @@ def register_extensions(app):
     moment.init_app(app)
     ckeditor.init_app(app)
     mail.init_app(app)
+    login_manager.init_app(app)
 
 
 def register_blueprints(app):
