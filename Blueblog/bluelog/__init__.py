@@ -2,13 +2,14 @@ import os
 
 import click
 from flask import Flask, render_template
-
+from flask_login import current_user
 
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
 from bluelog.extensions import db, moment, bootstrap, ckeditor, mail
 from bluelog.settings import config
+from bluelog.models import Admin, Category, Comment, Link
 
 
 def create_app(config_name=None):
@@ -54,7 +55,16 @@ def register_shell_context(app):
 
 
 def register_template_context(app):
-    pass
+    @app.context_processor
+    def make_template_context():
+        admin = Admin.query.first()
+        categories = Category.query.order_by(Category.name).all()
+        links = Link.query.order_by(Link.name).all()
+        if current_user.is_authenticated:
+            unread_comments = Comment.query.filter_by(reviewed=False).count()
+        else:
+            unread_comments = None
+        return dict(admin=admin, categories=categories, links=links, unread_comments=unread_comments)
 
 
 def register_errors(app):
