@@ -36,6 +36,7 @@ class Post(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', back_populates='posts')
     comments = db.relationship('Comment', back_populates='post', cascade='all')
+    can_comment = db.Column(db.Boolean, default=True)
 
 
 class Comment(db.Model):
