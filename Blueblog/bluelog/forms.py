@@ -53,3 +53,11 @@ class LinkForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     url = StringField('URL', validators=[DataRequired(), URL(), Length(1, 254)])
     submit = SubmitField()
+
+
+class SettingForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(1, 70)])
+    blog_title = StringField('Blog Title', validators=[DataRequired(), Length(1, 60)])
+    blog_subtitle = StringField('Blog Sub-title', validators=[DataRequired(), Length(1, 100)])
+    about = CKEditorField('About', validators=[DataRequired()])
+    submit = SubmitField()

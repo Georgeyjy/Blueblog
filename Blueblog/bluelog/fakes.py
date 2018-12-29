@@ -10,6 +10,9 @@ fake = Faker()
 
 
 def fake_admin():
+    admin = Admin.query.all()
+    if admin:
+        return 'Admin already exists'
     admin = Admin(
         username='admin',
         blog_title='Bluelog',

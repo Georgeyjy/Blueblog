@@ -3,11 +3,12 @@ import os
 import click
 from flask import Flask, render_template
 from flask_login import current_user
+from flask_wtf.csrf import CSRFError
 
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
-from bluelog.extensions import db, moment, bootstrap, ckeditor, mail, login_manager
+from bluelog.extensions import db, moment, bootstrap, ckeditor, mail, login_manager, csrf
 from bluelog.settings import config
 from bluelog.models import Admin, Category, Comment, Link
 
@@ -41,6 +42,7 @@ def register_extensions(app):
     ckeditor.init_app(app)
     mail.init_app(app)
     login_manager.init_app(app)
+    csrf.init_app(app)
 
 
 def register_blueprints(app):
@@ -81,6 +83,10 @@ def register_errors(app):
     def internal_server_error(e):
         return render_template('errors/500.html'), 500
 
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        return render_template('errors/400.html', description=e.description), 400
+
 
 def register_commands(app):
     @app.cli.command()
@@ -92,6 +98,29 @@ def register_commands(app):
             click.echo('Deleted database')
         db.create_all()
         click.echo('Initialized database')
+
+    @app.cli.command()
+    @click.option('--username', prompt=True, help='Admin username')
+    @click.option('--password', prompt=True, hide_input=True,
+                  confirmation_prompt=True, help='Admin password')
+    def create_admin(username, password):
+        admin = Admin.query.first()
+        if admin:
+            click.echo('The administrator exists, updating...')
+            admin.username = username
+            admin.set_password(password)
+        click.echo('Creating admin account...')
+        admin = Admin(
+            username=username,
+            blog_title='A blog',
+            blog_subtitle='hakuna matata',
+            name='Timon',
+            about='Lion king baby'
+        )
+        admin.password_hash = admin.set_password(password)
+        db.session.add(admin)
+        db.session.commit()
+        click.echo('Done')
 
     @app.cli.command()
     @click.option('--category', default=10)
