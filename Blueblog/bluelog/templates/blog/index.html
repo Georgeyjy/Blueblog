@@ -4,14 +4,20 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <div>
-        <h1>{{ admin.blog_title|default('Blog Title') }}</h1>
-        <h4>{{ admin.blog_subtitle|default('whatever') }}</h4>
+    <div class="page-header">
+    {{ admin.name }}
+        <h1 class="display-3">{{ admin.blog_title|default('Blog Title') }}</h1>
+        <h4 class="text-muted">&nbsp;{{ admin.blog_subtitle|default('Blog Subtitle') }}</h4>
     </div>
-    <div>
-        {% include 'blog/_posts.html' %}
-        {% if posts %}
-        <div>{{ render_pager(pagination) }}</div>
-        {% endif %}
+    <div class="row">
+        <div class="col-sm-8">
+            {% include 'blog/_posts.html' %}
+            {% if posts %}
+                <div class="page-footer">{{ render_pager(pagination) }}</div>
+            {% endif %}
+        </div>
+        <div class="col-sm-4 sidebar">
+            {% include 'blog/_sidebar.html' %}
+        </div>
     </div>
 {% endblock %}
